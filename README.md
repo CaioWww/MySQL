@@ -1,2 +1,1461 @@
 # MySQL
 Fui aprender sobre Banco de Dados e fiz o Scrip do meu " Início até o dia de hoje" com MySQL
+
+
+	 =====/* Modelagem Básica */ =====
+	 ENTIDADE = TABELA
+	 CAMPOS = ATRIBUTOS
+	 
+	 -CLIENTE-
+	 
+	 NOME - CARACTER(30)
+	 CPF - NUMERICO (11)
+	 EMAIL - CARACTER(30)
+	 TELEFONE - CARACTER (30)
+	 ENDEREÇO - CARACTER(30)
+	 SEXO - CARACTER(1)
+	  
+	/* PROCESSOS DE MODELAGEM */
+
+	/* FASE 01 E FASE 02 - AD ADM DE DADOS */
+
+	===== MODELAGEM CONEITUAL - RASCUNHO =======
+	===== MODELAGEM LÓGICA - QUALQUER PROGRAMA DE MODELAGEM =====
+
+	/* FASE 03 - DBA / AD*/
+
+	==== MODELAGEM FÍSICA - SCRIPT DE BANCO ====
+
+	/* INICIANDO A MODELAGEM FÍSICA */ 
+
+	/*CRIANDO A MODELAGEM FÍSICA */ 
+
+	CREATE DATABASE PROJETO;
+
+	/* CONCETANDO-SE AO BANCO */ 
+
+	USE PROJETO;
+
+	/* CRIANDO TABELA DE CLIENTES */
+
+	CREATE TABLE CLIENTES(
+		NOME VARCHAR(30),
+		SEXO CHAR(1),
+		EMAIL VARCHAR(30),
+		CPF INT(11),
+		TELEFONE VARCHAR(30),
+		ENDERECO VARCHAR(100)
+	);
+
+	/* VERIFICANDO AS TABELAS DO BANCO */
+
+	 SHOW TABLES;
+
+	/* DESCOBRINDO COMO É A ESTRUTURA DE UMA TABELA */
+
+	DESC CLIENTES;
+
+	=====/* TIPAGEM DE TABELAS DE BANCO DE DADOS */=====
+
+	CARACTER LITERAL = CHAR(NÃO VARIA) / VARCHAR(DINAMICAMENTE ALOCADO)
+	NÚMEROS = INT( máx 11 digitos) / FLOAT(N,M) n casas, m após a vírgula
+	FOTOS OU DOCUMENTOS = BLOB
+	TEXTOS EXTENSOS = TEXT
+	ENUMERAÇÃO = ENUM (Constraint)
+
+	=====/* FORMA 01 - OMITINDO COLUNAS */=====
+
+	INSERT INTO CLIENTES VALUES('JOAO','M','JOAO@GMAIL.COM',988638273,'22923110','MAIA LACERDA - ESTACIO - RIO DE JANEIRO - RJ');
+	INSERT INTO CLIENTES VALUES('CELIA','F','CELIA@GMIAL.COM',541521456,'25078869','RIACHUELO - CENTRO - RIO DE JANEIRO - RJ');
+	INSERT INTO CLIENTES VALUES('JORGE','M',NULL,885755869,'58748895','OSCAR CURY - BOM RETIRO - PATOS DE MINAS - MG');
+
+	=====/*FORMA 02 - COLOCANDO AS COLUNAS */=====
+
+	INSERT INTO CLIENTES(NOME,SEXO,ENDERECO,TELEFONE,CPF) 
+	VALUES ('LILIAN','F', 'SENADOR SOARES - TIJUCA - RIO DE JANEIRO - RJ','947785696',887774856);
+
+	=====/* FORMA 03- ISNERT COMPACTO - ONLY MYSQL */=====
+
+	INSERT INTO CLIENTES VALUES ('ANA','F','ANA@GLOBO.COM',85548962,'548556985','PRES ANTONIO CARLOS - CENTRO - SÃO PAULO - SP'),
+	('CARLA','F','CARLA@TERATI.COM.BR',7745828,'66587458','SAMUEL SILVA CARLOS - CENTRO - BELO HORIZONTE - MG');
+
+	=====/* O COMANDO SELECT (SELEÇÃO, PROJEÇÃO E JUNÇÃO)*/=====
+
+	SELECT NOW() AS DATA_HORA;
+
+	SELECT 'FELIPE MAFRA';
+
+	SELECT 'BANCO DE DADOS';
+
+	===== /*ALIAS DE COLUNAS (AS)*/ =====
+
+	SELECT NOME, SEXO, EMAIL FROM CLIENTES;
+
+	SELECT NOME, SEXO, EMAIL, ENDERECO FROM CLIENTE;
+
+	======/* APENAS PARA FINS ACADÊMICOS - 
+	(NÃO USE NA EMPRESA, GERA TRÁFEGO DESNECESSÁRIO)*/ =====
+
+	SELECT * FROM TABLE;
+
+	/* FILTRANDO COM DADOS WHERE E LIKE */
+
+	SELECT NOME, TELEFONE  FROM CLIENTES;
+
+	===== /* FILTRANDO */ =====
+
+	SELECT NOME, SEXO FROM CLIENTES WHERE SEXO = 'M';
+	SELECT NOME, SEXO FROM CLIENTES WHERE ENDERECO = 'RJ';
+
+	=====/* UTILIZANDO O LIKE "COMO" (LIKE, PESQUISA ALGO DENTRO DE UM CAMPO E
+	ENTRA NO LUGAR DA IGUALDADE) 
+	O OPERADOR LIKE UTILIZA CARATERES CORINGA % -> QUALQUER COISA
+	*/=====
+
+
+	/* COMEÇA COM QUALQUER COISA E TERMINA COM RJ */
+
+	SELECT NOME, SEXO FROM CLIENTES WHERE ENDERECO LIKE '%RJ';
+
+	/* COMEÇA COM ALGO E TERMINA COM QUALQUER COISA */
+
+	SELECT NOME, SEXO FROM CLIENTES WHERE ENDERECO LIKE 'RJ%';
+
+	/* TAMBÉM TEMOS O FILTRO "_", QUE REPRESENTA CARACTERES ANTES OU DEPOIS DO "%" */
+
+
+	===== /* OPERADORES LÓGICOS 
+	OR -> PARA QUE A SAÍDA SEJA VERDADEIRA, APENAS UMA CONDIÇÃO PRECISA SER VERDADEIRA.
+	AND -> AS DUAS CONDIÇÕES PRECISAM SER VERDADEIRAS.
+	*/
+
+	=====/* OR */=====
+
+	SELECT NOME, SEXO, ENDERECO FROM CLIENTES 
+	WHERE
+	SEXO = 'M' OR ENDERECO LIKE '%RJ';
+
+	=====/*AND*/=====
+
+	SELECT NOME, SEXO, ENDERECO FROM CLIENTES 
+	WHERE
+	SEXO = 'M' AND ENDERECO LIKE '%RJ';
+
+
+	 ===== /*COUNT(*), GROUP BY, PERFORMANCE COM OPERADORES LÓGICOS */ =====
+	 
+	 /*CONTANDO OS REGISTROS DE UMA TABELA */ 
+	 
+	 SELECT COUNT(*) as "Quantidade de registros da Tab. Clientes"
+	 FROM CLIENTES;
+
+	/*OPERADOR GROUP BY*/
+
+	SELECT SEXO, COUNT(*) FROM CLIENTES
+	GROUP BY SEXO; /* CONTOU 6 LINHAS E AGRUPOU PELO SEXO */
+
+
+
+	===== /*PARA FILTRAR VALORES NULOS*/ =====
+
+	SELECT NOME,SEXO,ENDERECO
+	FROM CLIENTES
+	WHERE EMAIL IS NULL;
+
+	===== /* OU TAMBÉM */ =====
+
+	SELECT NOME,SEXO,ENDERECO
+	FROM CLIENTES
+	WHERE EMAIL IS NOT NULL;
+
+
+
+	===== /* UTILIZANDO O UPDATE PARA AUTALIZAR VALORES */ =====
+	===== /*UPDATE SEMPRE SERÁ PRECEDIDO DA CLÁUSURA WHERE*/=====
+
+	UPDATE CLIENTE
+	SET EMAIL = 'CAIOBRENO24@GMAIL.COM'
+	WHERE NOME = 'CAIO BRENO'; 
+
+	===== /*DELETANDO REGISTROS COM A CLÁUSURA DELETE */ =====
+	===== /* DELETE SEMPRE PRECEDIDO DA CLÁUSURA WHERE */ =====
+	===== /* SEMPRE QUE PUDER, FAZER UM COUNT (*) ANTES DE DEPOIS DO COMANDO*/ =====
+
+	DELETE FROM CLIENTE; /* JAMAIS UTILIZAR, ISSO DELETA A TABELA INTEIRA */ 
+
+	SELECT (*) FROM CLIENTE
+	WHERE NOME = 'ANA';
+
+	SELECT COUNT(*) FROM CLIENTE; -- TOTAL 6
+
+	SELECT COUNT(*) FROM CLIENTE -- TOTAL A SER DELETADO 01
+	WHERE NOME = 'ANA';
+
+	DELETE FROM CLIENTE
+	WHERE = NOME 'ANA'
+	and email = 'caiobreno24@gmail.com';
+
+	SELECT COUNT(*) FROM CLIENTE; -- RESTANTE 05
+	
+	
+	
+	========================================================================================================
+
+	/* PRIMEIRA FORMA NORMAL */
+	/*
+
+	1- Todo campo vetorizado (mesma família) se tornará outra tabela 
+
+	2- Todo campo multivalorado se tornará outra tabela.
+	ou quando o campo for divisível.
+
+	3- Toda tabela necessita de pelo menos um campo que identifique todo o registro, como sendo único.
+	isso é o que chamamos de chave primaria ou primary key. (Registro único).
+
+	4- Chaves artificiais são mais usadas que as chaves naturais.
+
+	/* CHAVE ESTRANGEIRA (FOREIGN KEY) É A PRIMARY KEY DE OUTRA TABELA
+	QUE VAI ATÉ OUTRA TABELA PARA FAZER REFERÊNCIA ENTRE
+	REGISTROS */ 
+
+	/* A CHAVE ESTRANGEIRA DEPENDE DA CARDINALIDADE */
+	/* EM RELACIONAMENTOS (1X1) A CHAVE ESTRANGEIRA FICA NA TABELA MAIS FRACA (DEPENDE DO TIPO DE NEGÓCIO)/*
+	/*CONSTRAINT = REGRA*/
+	
+	==========================================================================================================
+	
+	             /* A PARTIR DESSE PONTO ESTAMOS NO BANCO 'COMERCIO' */
+
+
+	===== /* SELEÇÃO,PROJEÇÃO E JUNÇÃO */ =====
+
+	===== /* PROJEÇÃO(SELECT) É TUDO O QUE VOCÊ QUER VER NA TELA */ =====
+	
+	SELECT * from ;
+	
+	select now() AS DATA_ATUAL; /*VAI PROJETAR UMA COLUNA COM A DATA ATUAL */
+
+	SELECT 3 + 3 AS SOMA; /*VAI PROJETAR UMA COLUNA COM O  RESULTADO */
+
+	/* PROJETAR PRIMEIRO O QUE EU QUERO QUE APAREÇA */
+	
+	
+	
+	===== /*SELEÇÃO(WHERE)*/ =====
+	
+	/* É UM SUBCONJUNTO DO CONJUNTO TOTAL DE REGISTROS DE UMA TABELA*/
+	
+	===== /* A CLAUSULA DE SELEÇÃO É O WHERE*/=====
+
+	SELECT NOME,SEXO,EMAIL /*PROJEÇÃO*/
+	FROM CLIENTE          /*ORIGEM*/
+	WHERE SEXO = 'F';    /*SELEÇÃO*/
+
+	SELECT NUMERO        /*PROJEÇÃO*/
+	FROM TELEFONE       /*ORIGEM*/
+	WHERE TIPO = 'CEL';/*SELEÇÃO*/
+
+
+	===========/*JUNÇÃO -> JOIN */ ==============
+
+	SELECT NOME, EMAIL, IDCLIENTE
+	FROM CLIENTE;
+
+	+--------+---------------+-----------+
+	| NOME   | EMAIL         | IDCLIENTE |
+	+--------+---------------+-----------+
+	| Joao   | Joao@IG.com   |         1 |
+	| Carlos | Carlos@IG.com |         2 |
+	| Ana    | Ana@IG.com    |         3 |
+	| Clara  | NULL          |         4 |
+	| Jorge  | Jorge@IG.com  |         5 |
+	| Celia  | Celia@IG.com  |         6 |
+	+--------+---------------+-----------+
+
+
+	SELECT ID_CLIENTE, BAIRRO, CIDADE
+	FROM ENDERECO;
+
+	+------------+----------+----------------+
+	| ID_CLIENTE | BAIRRO   | CIDADE         |
+	+------------+----------+----------------+
+	|          4 | CENTRO   | B. HORIZONTE   |
+	|          1 | CENTRO   | RIO DE JANEIRO |
+	|          3 | JARDINS  | SÃO PAULO      |
+	|          2 | ESTACIO  | RIO DE JANEIRO |
+	|          6 | FLAMENGO | RIO DE JANEIRO |
+	|          5 | CENTRO   | VITORIA        |
+	+------------+----------+----------------+
+
+
+	/* NOME, SEXO, BAIRRO, CIDADE */
+	
+	SELECT NOME, SEXO, BAIRRO, CIDADE
+	FROM CLIENTE, ENDERECO   /* FUNCIONA, MAS NÃO É O IDEAL, MUITO MENOS PROFISSIONAL.(NÃO UTILIZAR) */
+	WHERE IDCLIENTE = ID_CLIENTE;
+
+	+--------+------+----------+----------------+
+	| NOME   | SEXO | BAIRRO   | CIDADE         |
+	+--------+------+----------+----------------+
+	| Joao   | M    | CENTRO   | RIO DE JANEIRO |
+	| Carlos | M    | ESTACIO  | RIO DE JANEIRO |
+	| Ana    | F    | JARDINS  | SÃO PAULO      |
+	| Clara  | F    | CENTRO   | B. HORIZONTE   |
+	| Jorge  | M    | CENTRO   | VITORIA        |
+	| Celia  | F    | FLAMENGO | RIO DE JANEIRO |
+	+--------+------+----------+----------------+
+
+	=======/*INNER JOIN*/========
+
+	SELECT NOME, SEXO, BAIRRO, CIDADE /* PROJEÇÃO */
+	FROM CLIENTE                     /* ORIGEM */
+	INNER JOIN ENDERECO             /* JUNÇÃO */
+	ON IDCLIENTE = ID_CLIENTE      /* ONDE */
+	WHERE SEXO = 'F';             /* SELEÇÃO */
+
+	+-------+------+----------+----------------+
+	| NOME  | SEXO | BAIRRO   | CIDADE         |
+	+-------+------+----------+----------------+
+	| Ana   | F    | JARDINS  | SÃO PAULO      |
+	| Clara | F    | CENTRO   | B. HORIZONTE   |
+	| Celia | F    | FLAMENGO | RIO DE JANEIRO |
+	+-------+------+----------+----------------+
+
+
+	SELECT NOME, SEXO, EMAIL, TIPO, NUMERO
+	FROM CLIENTE
+	INNER JOIN TELEFONE
+	ON IDCLIENTE = ID_CLIENTE;
+
+	+--------+------+---------------+------+----------+
+	| NOME   | SEXO | EMAIL         | TIPO | NUMERO   |
+	+--------+------+---------------+------+----------+
+	| Joao   | M    | Joao@IG.com   | CEL  | 98956465 |
+	| Joao   | M    | Joao@IG.com   | RES  | 61548625 |
+	| Joao   | M    | Joao@IG.com   | COM  | 85256545 |
+	| Carlos | M    | Carlos@IG.com | COM  | 65681215 |
+	| Carlos | M    | Carlos@IG.com | CEL  | 95852564 |
+	| Ana    | F    | Ana@IG.com    | CEL  | 32659847 |
+	| Ana    | F    | Ana@IG.com    | CEL  | 32154879 |
+	| Jorge  | M    | Jorge@IG.com  | CEL  | 85898684 |
+	| Jorge  | M    | Jorge@IG.com  | RES  | 98976869 |
+	| Jorge  | M    | Jorge@IG.com  | RES  | 95154685 |
+	+--------+------+---------------+------+----------+
+
+
+	=========/* INNER JOIN COM TRÊS TABELAS */ ========
+
+	SELECT CLIENTE.NOME, CLIENTE.SEXO, ENDERECO.BAIRRO, ENDERECO.CIDADE, TELEFONE.TIPO, TELEFONE.NUMERO
+	FROM CLIENTE
+	INNER JOIN ENDERECO
+	ON CLIENTE.IDCLIENTE = ENDERECO.ID_CLIENTE
+	INNER JOIN TELEFONE
+	ON CLIENTE.IDCLIENTE = TELEFONE.ID_CLIENTE;
+
+	+--------+------+---------+----------------+------+----------+
+	| NOME   | SEXO | BAIRRO  | CIDADE         | TIPO | NUMERO   |
+	+--------+------+---------+----------------+------+----------+
+	| Joao   | M    | CENTRO  | RIO DE JANEIRO | CEL  | 98956465 |
+	| Joao   | M    | CENTRO  | RIO DE JANEIRO | RES  | 61548625 |
+	| Joao   | M    | CENTRO  | RIO DE JANEIRO | COM  | 85256545 |
+	| Carlos | M    | ESTACIO | RIO DE JANEIRO | COM  | 65681215 |
+	| Carlos | M    | ESTACIO | RIO DE JANEIRO | CEL  | 95852564 |
+	| Ana    | F    | JARDINS | SÃO PAULO      | CEL  | 32659847 |
+	| Ana    | F    | JARDINS | SÃO PAULO      | CEL  | 32154879 |
+	| Jorge  | M    | CENTRO  | VITORIA        | CEL  | 85898684 |
+	| Jorge  | M    | CENTRO  | VITORIA        | RES  | 98976869 |
+	| Jorge  | M    | CENTRO  | VITORIA        | RES  | 95154685 |
+	+--------+------+---------+----------------+------+----------+
+
+	===== /* EM UM JOIN COM MAIS DE DUAS TABELAS, É COMUM QUE O SGBD NÃO CONSIGA FAZER 
+	AS CONSULTAS NATURALMENTE POR AMBIGUDADE DE COLUNAS, ENTÃO, BASTA APENAS PREFIXAR
+	O NOME DA TABELA.NOME DA COLUNA */
+
+	/* OU, MAIS COMUMENTE, APENAS ADICIONAR UM ALIAS A TABELA E PREFIXAR ESSE ALIAS NAS COLUNAS */
+
+	SELECT C.NOME, C.SEXO, E.BAIRRO, E.CIDADE, T.TIPO, T.NUMERO
+	FROM CLIENTE C
+	INNER JOIN ENDERECO E 
+	ON C.IDCLIENTE = E.ID_CLIENTE
+	INNER JOIN TELEFONE T
+	ON C.IDCLIENTE = T.ID_CLIENTE;
+
+	=====/*ISSO SE CHAMA PONTEIRAMENTO */=====
+
+	/*
+	   DML -- DATA MANIPULATION LANGUAGE -- MANIPULAÇÃO DE DADOS 
+	   DDL -- DATA DEFINITION LANGUAGE -- TIPAGEM DOS DADOS
+	   DCL -- DATA CONTROL LANGUAGE -- CONTROLE DE ACESSO
+	   TCL -- TRANSACTION CONTROL LANGUAGE 
+	   
+	*/
+
+
+	=====/* DML -- DATA MANIPULATION LANGUAGE -- MANIPULAÇÃO DE DADOS */=====
+
+	INSERT INTO CLIENTE VALUES ( NULL,'PAULA','M',NULL,'07742911176');
+	INSERT INTO ENDERECO VALUES( NULL, 'RUA JOAQUIM SILVA','ALVORADA','NITEROI','RJ',7);
+
+	SELECT * FROM CLIENTE;
+
+	/* FILTROS */ 
+
+	SELECT * FROM CLIENTE
+	WHERE SEXO = 'M';
+
+	 /* UPDATE FILTRA PELA CHAVE */
+	 
+	 SELECT * FROM CLIENTE
+	 WHERE IDCLIENTE = 7;
+	 
+	 UPDATE CLIENTE 
+	 SET SEXO = 'F'
+	 WHERE IDCLIENTE = 7;
+	 
+	 /* PARA DELETAR UM REGISTRO */ 
+	 
+	 DELETE FROM CLIENTE
+	 WHERE IDCLIENTE = ' boy  ';
+	 
+	 =====/* DDL -- DATA DEFINITION LANGUAGE -- TIPAGEM DOS DADOS */=====
+	 
+	 CREATE TABLE PRODUTO (
+		IDPRODUTO INT PRIMARY KEY AUTO_INCREMENT,
+		NOME_PRODUTO VARCHAR(30) NOT NULL,
+		PRECO INT,
+		FRETE FLOAT(10,2) NOT NULL
+	);
+	 
+	 
+	===== /* ALTER TABLE */=====
+
+	=====/* ALTERANDO UMA COLUNA - CHANGE */=====
+
+	ALTER TABLE PRODUTO
+	CHANGE PRECO VALOR_UNITARIO INT NOT NULL; /*ALTERANDO NOME E TIPO */
+
+	DESC PRODUTO;
+
+	+----------------+-------------+------+-----+---------+----------------+
+	| Field          | Type        | Null | Key | Default | Extra          |
+	+----------------+-------------+------+-----+---------+----------------+
+	| IDPRODUTO      | int(11)     | NO   | PRI | NULL    | auto_increment |
+	| NOME_PRODUTO   | varchar(30) | NO   |     | NULL    |                |
+	| VALOR_UNITARIO | int(11)     | NO   |     | NULL    |                |
+	| FRETE          | float(10,2) | NO   |     | NULL    |                |
+	+----------------+-------------+------+-----+---------+----------------+
+
+	=====/* ALTERANDO UMA COLUNA COM MODIFY */=====
+
+	ALTER TABLE PRODUTO
+	MODIFY VALOR_UNITARIO VARCHAR(50) NOT NULL;  /* ALTERANDO O TIPO */
+
+	+----------------+-------------+------+-----+---------+----------------+
+	| Field          | Type        | Null | Key | Default | Extra          |
+	+----------------+-------------+------+-----+---------+----------------+
+	| IDPRODUTO      | int(11)     | NO   | PRI | NULL    | auto_increment |
+	| NOME_PRODUTO   | varchar(30) | NO   |     | NULL    |                |
+	| VALOR_UNITARIO | varchar(50) | NO   |     | NULL    |                |
+	| FRETE          | float(10,2) | NO   |     | NULL    |                |
+	+----------------+-------------+------+-----+---------+----------------+
+
+
+	=====/* ADICIONANDO COLUNAS */ =====
+
+	ALTER TABLE PRODUTO
+	ADD PESO FLOAT (10,2) NOT NULL;
+
+	+----------------+-------------+------+-----+---------+----------------+
+	| Field          | Type        | Null | Key | Default | Extra          |
+	+----------------+-------------+------+-----+---------+----------------+
+	| IDPRODUTO      | int(11)     | NO   | PRI | NULL    | auto_increment |
+	| NOME_PRODUTO   | varchar(30) | NO   |     | NULL    |                |
+	| VALOR_UNITARIO | varchar(50) | NO   |     | NULL    |                |
+	| FRETE          | float(10,2) | NO   |     | NULL    |                |
+	| PESO           | float(10,2) | NO   |     | NULL    |                |
+	+----------------+-------------+------+-----+---------+----------------+
+
+
+	=====/* APAGANDO UMA COLUNA */ =====
+
+	ALTER TABLE PRODUTO
+	DROP COLUMN PESO;
+
+	+----------------+-------------+------+-----+---------+----------------+
+	| Field          | Type        | Null | Key | Default | Extra          |
+	+----------------+-------------+------+-----+---------+----------------+
+	| IDPRODUTO      | int(11)     | NO   | PRI | NULL    | auto_increment |
+	| NOME_PRODUTO   | varchar(30) | NO   |     | NULL    |                |
+	| VALOR_UNITARIO | varchar(50) | NO   |     | NULL    |                |
+	| FRETE          | float(10,2) | NO   |     | NULL    |                |
+	+----------------+-------------+------+-----+---------+----------------+
+
+
+	=====/* ADICIONANDO UMA COLUNA EM ORDEM ESPECÍFICA */ =====
+
+	ALTER TABLE PRODUTO
+	ADD COLUMN PESO FLOAT(10,2) NOT NULL
+	AFTER NOME_PRODUTO; /* ANTES */ 
+	/* CASO FOSSE ADICIONAR EM PRIMEIRO LUGAR, 'FIRST' */
+	+----------------+-------------+------+-----+---------+----------------+
+	| Field          | Type        | Null | Key | Default | Extra          |
+	+----------------+-------------+------+-----+---------+----------------+
+	| IDPRODUTO      | int(11)     | NO   | PRI | NULL    | auto_increment |
+	| NOME_PRODUTO   | varchar(30) | NO   |     | NULL    |                |
+	| PESO           | float(10,2) | NO   |     | NULL    |                |
+	| VALOR_UNITARIO | varchar(50) | NO   |     | NULL    |                |
+	| FRETE          | float(10,2) | NO   |     | NULL    |                |
+	+----------------+-------------+------+-----+---------+----------------+
+
+
+	=====/* FUNÇÕES */ =====
+
+	/* FUNÇÃO É UM BLOCO DE PROGRAMAÇÃO QUE EXECUTA ALGO */
+	
+	===== /* FUNÇÃO IFNULL */ =====
+
+	SELECT 	 C.NOME,
+			 IFNULL(C.EMAIL,'NÃO TEM EMAIL') AS "E-MAIL", /* caso o primeiro seja nulo, será substituído pelo String */  
+			 E.ESTADO, 
+			 T.NUMERO
+	FROM CLIENTE C 
+	INNER JOIN ENDERECO E 
+	ON C.IDCLIENTE = E.ID_CLIENTE
+	INNER JOIN TELEFONE T 
+	ON C.IDCLIENTE = T.ID_CLIENTE;
+
+
+	=====/* VIEWS ( VISÃO ) */ =====
+
+	    /* RELATÓTIO DE TUDO */
+
+	SELECT  C.NOME, C.SEXO, C.EMAIL, 
+			T.TIPO, T.NUMERO,
+			E.BAIRRO, E.CIDADE, E.ESTADO
+	FROM CLIENTE C
+	INNER JOIN TELEFONE T 
+	ON C.IDCLIENTE = T.ID_CLIENTE
+	INNER JOIN ENDERECO E 
+	ON C.IDCLIENTE = E.ID_CLIENTE;
+
+	====/* CRIANDO A VIEW */=====
+
+	CREATE VIEW V_RELATORIO AS 
+	SELECT  C.NOME, C.SEXO, IFNULL(C.EMAIL,'Cliente sem email')as 'E-MAIL', 
+			T.TIPO, T.NUMERO,
+			E.BAIRRO, E.CIDADE, E.ESTADO
+	FROM CLIENTE C
+	INNER JOIN TELEFONE T 
+	ON C.IDCLIENTE = T.ID_CLIENTE
+	INNER JOIN ENDERECO E 
+	ON C.IDCLIENTE = E.ID_CLIENTE;
+
+	===== /* PARA VER AS VIEWS EXISTENTES */ =====
+	===== /* A VIEW É MOSTRADA NO COMANDO SHOW TABLES */ =====
+	===== /*PARA APGAR UMA VIEW*/ ======
+
+	DROP VIEW RELATORIO;  
+
+	===== /* sempre necessario adicionar um prefixo na view*/ =====
+	===== /* Também é possível fazer select sobre uma view */ =====
+
+
+	====/* update, insert e delete com view */ =====
+	====/* não posso inserir ou deletar em uma view com join. Apenas é permitido dar update na view */ ==== 
+
+	/* exemplo de delete em view sem join*/
+
+	select from v_jogadores
+	where nome = 'alek';
+
+	/* exemplo de isnert em view sem join */ 
+	insert into v_jogadores values (guerreiro,'1');
+
+
+	/* também posso fazer seleções (select) dentro de uma view
+	como uma tabela normal*/
+
+
+	===== /* ORDENANDO DADOS */ =====
+
+	CREATE TABLE ALUNOS (
+	   NUMERO INT,
+	   NOME VARCHAR(20)
+	);
+
+	INSERT INTO ALUNOS VALUES (1,'JOAO');
+	INSERT INTO ALUNOS VALUES (1,'MARIA');
+	INSERT INTO ALUNOS VALUES (2,'ZOE');
+	INSERT INTO ALUNOS VALUES (2,'ANDRE');
+	INSERT INTO ALUNOS VALUES (3,'CLARA');
+	INSERT INTO ALUNOS VALUES (1,'CLARA');
+	INSERT INTO ALUNOS VALUES (4,'MAFRA');
+	INSERT INTO ALUNOS VALUES (5,'JANAINA');
+	INSERT INTO ALUNOS VALUES (1,'JANAINA');
+	INSERT INTO ALUNOS VALUES (3,'MARCELA');
+	INSERT INTO ALUNOS VALUES (4,'GIOVANI');
+	INSERT INTO ALUNOS VALUES (5,'ANTONIO');
+	INSERT INTO ALUNOS VALUES (6,'ANA');
+	INSERT INTO ALUNOS VALUES (6,'VIVIANE');
+
+	SELECT * FROM ALUNOS
+	ORDER BY NUMERO;
+
+	SELECT * FROM ALUNOS
+	ORDER BY 1;
+
+	SELECT * FROM ALUNOS
+	ORDER BY 2;
+
+	===== /* ORDENANDO POR MAIS DE UMA COLUNA*/ =====
+
+	SELECT * FROM ALUNOS
+	ORDER BY NUMERO, NOME;
+
+	SELECT * FROM ALUNOS
+	ORDER BY 1, 2;
+
+	===== /* MESCLANDO ORDER BY COM PROJEÇÃO (TRAZER SEMPRE PELO NOME) */ =====
+
+	SELECT NOME FROM ALUNOS
+	ORDER BY NUMERO, NOME;
+
+	====/*DESC E ASC*/====
+
+	SELECT * FROM ALUNOS
+	ORDER BY 1 ASC; /* ASCENDENTE É PADRÃO, DAFAULT*/
+
+	SELECT * FROM ALUNOS
+	ORDER BY 1 DESC; /* DESC NÃO É PADRÃO */
+
+	SELECT * FROM ALUNOS
+	ORDER BY 1 DESC,2 DESC;
+
+	===== /* ORDER BY COM JOIN */ =====
+
+	SELECT  C.NOME, C.SEXO, IFNULL(C.EMAIL,'Cliente sem email') as 'E-MAIL', 
+			T.TIPO, T.NUMERO,
+			E.BAIRRO, E.CIDADE, E.ESTADO
+	FROM CLIENTE C
+	INNER JOIN TELEFONE T 
+	ON C.IDCLIENTE = T.ID_CLIENTE
+	INNER JOIN ENDERECO E 
+	ON C.IDCLIENTE = E.ID_CLIENTE
+	ORDER BY 1;
+
+
+	SELECT * from V_RELATORIO
+	ORDER BY 1;
+
+
+
+	=========== /* DELIMITADOR */ ============
+	 ====/* PARA MUDAR O DELIMITADOR */======
+	 
+	 DELIMITER $
+	 
+	 SELECT * FROM V_RELATORIO$
+
+
+
+
+
+
+	============ /*PROGRAMÇÃO EM BANCO DE DADOS */ ==============
+
+			 ========/* STORED PROCEDURES */=========
+			 
+			 
+	DELIMITER $
+
+			===== /* PROCEDURE SEM PARAMETRO */ =====
+			
+	CREATE PROCEDURE NOME_EMPRESA()
+	BEGIN
+	 
+		SELECT 'UNIVERSIDADE DOS DADOS' AS EMPRESA;
+		
+	END
+	$
+
+	===/* CHAMANDO UMA PROCEDURE */ =====
+
+	CALL NOME_EMPRESA();
+
+	===== /* NÃO ESQUECER DE VOLTAR PARA O DELIMITER ORIGINAL */ =====
+
+
+	===== /*PROCEDURE COM PARAMETROS*/ =====
+		
+	   DELIMITER $
+	   
+	   CREATE PROCEDURE CONTA(NUMERO1 INT, NUMERO2 INT)
+	   BEGIN
+	   
+		 SELECT NUMERO1 + NUMERO2 AS CONTA;
+		 
+		END$
+
+
+	 CALL CONTA(100,50)$
+	 
+	 
+	 /* PARA APAGAR UMA PROCEDURE */
+	 
+	 DROP PROCEDURE CONTA;
+	 
+	===== /* IREI APAGAR TODAS AS DATABASES PARA COMERCAR MANIPULANDO COM PROCEDURES */ =====
+	
+	DROP DATABASE LIVRARIA;
+	DROP DATABASE PROJETO;
+	DROP DATABASE COMERCIO;
+	
+	========================
+	
+	CREATE DATABASE PROJETO;
+	USE PROJETO;
+	
+	
+	CREATE TABLE CURSOS(
+	 IDCURSO INT PRIMARY KEY AUTO_INCREMENT,
+	 NOME VARCHAR(30)NOT NULL,
+	 HORAS INT(3) NOT NULL,
+	 VALOR FLOAT (10,2) NOT NULL
+	);
+	
+	INSERT INTO CURSOS VALUES(NULL,'JAVA',30,500.00);
+	INSERT INTO CURSOS VALUES(NULL,'FUNDAMENTOS DE BANCO DE DADOS',40,700.00);
+	
+	SELECT * FROM CURSOS;
+	
+	
+	DELIMITER #
+	
+	CREATE PROCEDURE CAD_CURSO(P_NOME VARCHAR(30),
+	                           P_HORAS INT(3),
+							   P_PRECO FLOAT(10,2))
+							   
+							   
+							   
+	BEGIN
+	
+	INSERT INTO CURSOS VALUES (NULL,P_NOME,P_HORAS,P_PRECO);
+	
+	END
+	#
+	
+	call cad_curso('BI SQL SERVER',35,3000.00);
+	CALL CAD_CURSO('POWER BI',20,1000.00);
+	CALL CAD_CURSO('TABLEAU',30,1200.00);
+	
+	
+	DELIMITER $
+	
+	create procedure consulta_cursos()
+	BEGIN
+	
+	   SELECT IDCURSO, NOME
+	   FROM CURSOS;
+	   
+	END$
+	
+	DELIMITER ;
+	
+	CALL CONSULTA_CURSOS();
+	
+	
+	
+	===== /* AS FUNÇÕES DE AGREGAÇÃO NUMÉRICAS */ =====
+	
+	CREATE TABLE VENDEDORES(
+	     IDVENDEDOR INT PRIMARY KEY AUTO_INCREMENT,
+		 NOME VARCHAR(20),
+		 SEXO CHAR(1),
+		 JANEIRO FLOAT(10,2),
+		 FEVEREIRO FLOAT (10,2),
+		 MARCO FLOAT (10,2)
+	);
+	
+	
+	INSERT INTO VENDEDORES (IDVENDEDOR,NOME,SEXO,JANEIRO,FEVEREIRO,MARCO)
+	VALUES 
+		   (NULL,'MARIA','F',2534687.25,258523.25,2546953.52),
+		   (NULL,'ANTONIO','M',2568454.15,45635.25,36963.25),
+		   (NULL,'CARLA','F',32152.25,746598.25,235620.02),
+		   (NULL,'ANDERSON','M',202032.32,10202.03,506060.22),
+		   (NULL,'IVONE','F',856525.25,56895.58,12535.23),
+		   (NULL,'JOAO','M',126454.22,568525.58,1245265.23),
+		   (NULL,'CELIA','F',12985.22,56844.58,125555.23);
+		   
+		   
+    SELECT * FROM VENDEDORES;
+	
+	
+	===== /* MAX - (TRAZ O VALOR MÁXIMO DE UMA COLUNA) */ =====
+	
+	SELECT MAX(FEVEREIRO) AS MAIOR_FV
+	FROM VENDEDORES;
+	
+	===== /* MIN - ( VALOR MINIMO DE UMA COLUNA ) */ =====
+	
+	SELECT MIN(MARCO) AS MIN_MARCO
+	FROM VENDEDORES;
+	
+	===== /* AVG - TRAZ O VALOR MEDIO DE UMA COLUNA ( LINHAS ) */ =====
+	
+	SELECT AVG(JANEIRO) AS MEDIA_JAN
+	FROM VENDEDORES;
+	
+	
+	===== /* VARIAS FUNÇÕES */ =====
+	
+	SELECT MAX(JANEIRO) AS MAX_JAN,
+		   MIN(JANEIRO) AS MIN_JAN,
+		   AVG(JANEIRO) AS MEDIA_JAN
+	FROM VENDEDORES;
+	
+	===== /* TRUNCATE(NUMERO, QTD DE CASAS DECIMAIS) */ =====
+	
+	SELECT TRUNCATE(MAX(JANEIRO),2) AS MAX_JAN,
+		   TRUNCATE(MIN(JANEIRO),2) AS MIN_JAN,
+		   TRUNCATE(AVG(JANEIRO),2) AS MEDIA_JAN
+	FROM VENDEDORES;
+	
+	
+	===== /* AGREGANDO COM SUM( SOMA ) */ =====
+	
+	SELECT SUM(JANEIRO) AS TOTAL_JAN
+	FROM VENDEDORES;
+	
+	SELECT SUM(JANEIRO) AS TOTAL_JAN,
+		   SUM(JANEIRO) AS TOTAL_JAN,
+		   SUM(JANEIRO) AS TOTAL_JAN
+	FROM VENDEDORES;
+	
+	
+	/* QUAL SEXO VENDEU MAIS EM MARÇO? */
+	
+	SELECT SEXO, SUM(MARCO) AS TOTAL_MARCO
+	FROM VENDEDORES
+	GROUP BY SEXO;
+	
+		+------+-------------+
+		| SEXO | TOTAL_MARCO |
+		+------+-------------+
+		| F    |  2920663.97 |
+		| M    |  1800823.95 |
+		+------+-------------+
+		
+		
+		
+		
+		===== /* SUBQUERY */ =====
+		
+	/* QUAL VENDEDOR VENDEU MENOS EM MARCO E QUAL SEU NOME? */ 
+	
+	SELECT NOME, MARCO 
+	FROM VENDEDORES
+	WHERE MARCO =
+	            (SELECT MIN(MARCO) FROM VENDEDORES);
+	
+	
+	
+	/* NOME E VALOR QUE VENDEU MAIS EM MARÇO */
+	
+	SELECT NOME, MARCO 
+	FROM VENDEDORES
+	WHERE MARCO =
+	            (SELECT MAX(MARCO) FROM VENDEDORES);
+	
+	
+	/* QUEM VENDEU MAIS QUE O VALOR MEDIO EM FEVEREIRO */ 
+	
+	SELECT NOME, MARCO 
+	FROM VENDEDORES
+	WHERE FEVEREIRO > 
+	            (SELECT AVG(FEVEREIRO) FROM VENDEDORES);
+				
+				
+	  ===== /* OPERAÇÕES COM LINHAS */ =====
+	  ===== /* SEMPRE COM OPERAÇÕES ARITMÉTICAS */ =====
+	  
+	  SELECT NOME,
+	         JANEIRO,
+			 FEVEREIRO,
+			 MARCO,
+			 (JANEIRO + FEVEREIRO + MARCO ) AS " TOTAL ",
+			 TRUNCATE((JANEIRO + FEVEREIRO + MARCO )/3,2) AS " MEDIA "
+			 FROM VENDEDORES;
+			 
+	 
+	 
+	 
+	 
+	 ===== /* alteradno a estrutura de uma tabela */ =====
+	 
+	create table TABELA(
+    COLUNA1 VARCHAR(30),
+    COLUNA2 VARCHAR(30),
+	COLUNA3 VARCHAR(30)
+	 );
+	 
+	 ===== /* ADICIONANDO UMA PK */ =====
+	 
+	 ALTER TABLE TABELA
+	 ADD PRIMARY KEY (COLUNA1);
+	 
+	 ===== /* ADICIONANDO UMA COLUNA SEM POSIÇÃO( ÚLTIMA POSIÇÃO ) */ =====
+	 
+	 ALTER TABLE TABELA 
+	 ADD COLUNA VARCHAR(30);
+	 
+	 ===== /* ADICIONANDO UMA COLUNA COM POSIÇÃO */ =====
+	 
+	 ALTER TABLE TABELA
+	 ADD COLUMN COULUNA4 VARCHAR(30) NOT NULL UNIQUE
+	 AFTER COLUNA3;
+	 
+	 ===== /* MODIFICANDO O TIPO DE CAMPO */ =====
+	 
+	 ALTER TABLE TABELA
+	 MODIFY COLUNA2 DATE NOT NULL;
+	 
+	 ===== /* MODIFICANDO O NOME DA TABELA */ =====
+	 
+	 ALTER TABLE TABELA
+	 RENAME PESSOA; 
+	 
+	 CREATE TABLE TIME (
+		IDTIME INT PRIMARY KEY AUTO_INCREMENT,
+		TIME VARCHAR(30),
+		ID_PESSOA VARCHAR(30)
+	 );
+	 
+	 
+	 ===== /* ADICIONANDO UMA FOREIGN KEY */ =====
+	 
+	 ALTER TABLE TIME
+	 ADD FOREIGN KEY (ID_PESSOA)
+	 REFERENCES PESSOA(COLUNA1);
+	 
+	 
+	 ===== /* VERIFICAR AS CHAVES (DESCRIÇÃO MAIS DETALHADA DA TABELA)*/ =====
+	 
+	 SHOW CREATE TABLE TIME; 
+	 
+	 
+	 ===== /* ORGANIZANDO CHAVES (constraint, regra) de intergridade referêncial */ =====
+	 
+	 CREATE TABLE JOGADOR(
+		IDJOGADOR INT PRIMARY KEY AUTO_INCREMENT,
+		NOME VARCHAR(30)
+	 );
+	 
+	 CREATE TABLE TIMES (
+		IDTIME INT PRIMARY KEY AUTO_INCREMENT,
+		NOMETIME VARCHAR(30),
+		ID_JOGADOR INT,
+		FOREIGN KEY (ID_JOGADOR)
+		REFERENCES JOGADOR(IDJOGADOR)
+	);
+	 
+	 
+	 INSERT INTO JOGADOR VALUES(NULL,'GUERRREO');
+	 INSERT INTO TIMES VALUES(NULL,'FLAMENGO',1);
+	 
+	 
+	 
+	 ===== /* é mais profissional criar chaves e contraints por fora da tabela */ =====
+	 
+	 
+	 SHOW TABLES;
+	 
+	 DROP TABLE ENDERECO;
+	 DROP TABLE TELEFONE;
+	 DROP TABLE CLIENTE;
+	 
+	 
+	===== /* ADICIONANDO PK E FK APÓS CRIAR AS TABELAS. MELHORA A LEITURA DO SCRIPT
+	 E É MAIS PROFISSIONAL */ =====
+	 
+	 CREATE TABLE CLIENTE(
+		 IDCLIENTE INT,
+		 NOME VARCHAR(30)
+	 );
+	 
+	 CREATE TABLE TELEFONE(
+		 IDTELEFONE INT,
+		 TIPO CHAR(3) NOT NULL,
+		 NUMERO VARCHAR(10) NOT NULL,
+		 ID_CLIENTE INT
+	 );
+	 
+	 ===== /* PRIMARY KEY */ =====
+	 
+	 ALTER TABLE CLIENTE ADD CONSTRAINT PK_CLIENTE
+	 PRIMARY KEY (IDCLIENTE);
+	 
+	 ===== /* FOREIGN KEY */ =====
+	 
+	 ALTER TABLE TELEFONE ADD CONSTRAINT FK_CLIENTE_TELEFONE
+	 FOREIGN KEY (ID_CLIENTE) REFERENCES CLIENTE(IDCLIENTE);
+	 
+	 
+	 SHOW CREATE TABLE TELEFONE;
+	 
+	 
+	 
+	 ===== /* DICIONÁRIO DE DADOS */ =====
+	 
+	 SHOW DATABASES;
+	 
+	 
+	 USE INFORMATION_SCHEMA;
+	 SHOW TABLES;
+	 DESC TABLE_CONSTRAINTS;
+	 
+		+--------------------+--------------+------+-----+---------+-------+
+		| Field              | Type         | Null | Key | Default | Extra |
+		+--------------------+--------------+------+-----+---------+-------+
+		| CONSTRAINT_CATALOG | varchar(512) | NO   |     |         |       |
+		| CONSTRAINT_SCHEMA  | varchar(64)  | NO   |     |         |       |
+		| CONSTRAINT_NAME    | varchar(64)  | NO   |     |         |       |
+		| TABLE_SCHEMA       | varchar(64)  | NO   |     |         |       |
+		| TABLE_NAME         | varchar(64)  | NO   |     |         |       |
+		| CONSTRAINT_TYPE    | varchar(64)  | NO   |     |         |       |
+		+--------------------+--------------+------+-----+---------+-------+
+		
+		
+		SELECT CONSTRAINT_SCHEMA AS "BANCO",
+		TABLE_NAME AS "TABELA",
+		CONSTRAINT_TYPE AS "TIPO"
+		FROM TABLE_CONSTRAINTS;
+		
+		
+	SELECT CONSTRAINT_SCHEMA AS "BANCO",
+		TABLE_NAME AS "TABELA",
+		CONSTRAINT_TYPE AS "TIPO"
+	FROM TABLE_CONSTRAINTS
+	WHERE CONSTRAINT_SCHEMA = 'PROJETO';
+	 
+	 
+	 ===== /* APAGANDO CONSTRAINTS */ =====
+	 
+	 USE PROJETO;
+	 
+	 ALTER TABLE TELEFONE 
+	 DROP FOREIGN KEY FK_CLIENTE_TELEFONE;
+	 
+	 
+	 ===== /* INTRODUÇÃO ÀS TRIGGERS (GATILHO)*/=====
+	 
+	 ===== /* ESTRUTURA DE UMA TRIGGER */ =====
+	 
+	 CREATE TRIGGER NOME
+	 BEFORE/AFTER /*(antes ou depois)*/  INSERT/DELETE/UPDATE ON TABELA
+	 FOR EACH ROW (PARA CADA LINHA)
+	 BEGIN 
+	 
+		QUALQUER SQL
+		
+	END
+	DELIMITER
+	
+	
+	     =======================
+		 
+		 
+	 CREATE DATABASE AULA40;
+	 USE AULA40;
+	  
+	  
+	CREATE TABLE USUARIO(
+		IDUSUARIO INT PRIMARY KEY AUTO_INCREMENT,
+		NOME VARCHAR(30),
+		LOGIN VARCHAR(30),
+		SENHA VARCHAR(100)
+	);
+	
+	
+	===== /* TABELA DE BACKUP*/ =====
+	
+	CREATE TABLE BKP_USUARIO(
+		IDBACKUP INT PRIMARY KEY AUTO_INCREMENT,
+		IDUSUARIO INT,
+		NOME VARCHAR(30),
+		LOGIN VARCHAR(30)
+	);
+	
+	===== /* CRIANDO A TRIGGER DE BACKPUP */ =====
+	
+	DELIMITER $
+	
+	CREATE TRIGGER BACKUP_USER
+	BEFORE DELETE ON USUARIO /* ANTES DO DELETE */ 
+	FOR EACH ROW 
+	BEGIN 
+	
+		INSERT INTO BKP_USUARIO 
+		VALUES(NULL,OLD.IDUSUARIO, OLD.NOME, OLD.LOGIN);
+	
+	
+	END $
+	DELIMITER;
+	
+	
+	INSERT INTO USUARIO VALUES
+	(NULL, 'ANDRADE','ANDRADE2009','HEXACAMPEAO');
+	
+	SELECT * FROM USUARIO;
+	
+	DELETE FROM USUARIO
+	WHERE IDUSUARIO = 1;
+	
+	SELECT * FROM USUARIO;
+	
+	SELECT * FROM BKP_USUARIO;
+	
+	
+	===== /* comunicação entre bancos */ =====
+	
+	CREATE DATABASE LOJA;
+	USE LOJA;
+	CREATE TABLE PRODUTO(
+		IDPRODUTO INT PRIMARY KEY AUTO_INCREMENT,
+		NOME VARCHAR(20),
+		VALOR FLOAT (10,2)
+	);
+	 
+	STATUS
+	
+	CREATE DATABASE BACKUP;
+	USE BACKUP;
+	CREATE TABLE BKP_PRODUTO(
+		IDBKP INT PRIMARY KEY AUTO_INCREMENT,
+		IDPRODUTO INT,
+		NOME VARCHAR(20),
+		VALOR FLOAT (10,2)
+	);
+	
+	USE LOJA;
+	
+	
+	
+	===== /* INSERINDO INFROMAÇÕES EM OUTRO BANCO */ =====
+	
+	
+	INSERT INTO BACKUP.BKP_PRODUTO VALUES(NULL,1000,'TESTE',0.0);
+	           /* Banco.tabeladobanco */
+	SELECT * FROM BACKUP.BKP_PRODUTO;
+	
+	
+	===== /* TRIGGER DE BACKUP LÓGICO  */ =====
+	
+	DELIMITER $
+	
+	CREATE TRIGGER BACKUP_PRODUTO
+	AFTER INSERT ON PRODUTO  
+	FOR EACH ROW
+	BEGIN 
+	
+		INSERT INTO BACKUP.BKP_PRODUTO VALUES
+	    (NULL, NEW.IDPRODUTO, NEW.NOME, NEW.VALOR); 
+	
+	END
+	$
+	 
+	DELIMITER ;
+	
+	INSERT INTO PRODUTO VALUES (NULL,'LIVRO MODELAGEM',50.00);
+	INSERT INTO PRODUTO VALUES (NULL,'LIVRO BI',80.00);
+	INSERT INTO PRODUTO VALUES (NULL,'LIVRO ORACLE',70.00);
+	INSERT INTO PRODUTO VALUES (NULL,'LIVRO SQL SERVER',100.00);
+	
+	SELECT * FROM PRODUTO;
+	SELECT * FROM BACKUP.BKP_PRODUTO;
+	
+	
+	===== /* TRIGGER DE BACKUP DELETE */ =====
+	
+	DELIMITER $
+	
+	CREATE TRIGGER BACKUP_PRODUTO_DEL 
+	BEFORE DELETE ON PRODUTO  /* ANTES */ 
+	FOR EACH ROW
+	BEGIN 
+	
+		INSERT INTO BACKUP.BKP_PRODUTO VALUES
+	    (NULL, OLD.IDPRODUTO, OLD.NOME, OLD.VALOR); 
+	
+	END
+	$
+	
+	DELIMITER ;
+	
+	DELETE FROM PRODUTO 
+	WHERE IDPRODUTO = 2;
+	
+	SELECT * FROM PRODUTO;
+	SELECT * FROM BACKUP.BKP_PRODUTO;
+	
+	
+	===== /* TRIGGER DE AUDITORIA */ =====
+	
+	DROP DATABASE LOJA;
+	DROP DATABASE BACKUP;
+	
+	CREATE DATABASE LOJA;
+	USE LOJA;
+	
+	CREATE TABLE PRODUTO(
+		IDPRODUTO INT PRIMARY KEY AUTO_INCREMENT,
+		NOME VARCHAR (30),
+		VALOR FLOAT (10,2)
+	);
+	
+	INSERT INTO PRODUTO VALUES (NULL,'LIVRO MODELAGEM',50.00);
+	INSERT INTO PRODUTO VALUES (NULL,'LIVRO BI',80.00);
+	INSERT INTO PRODUTO VALUES (NULL,'LIVRO ORACLE',70.00);
+	INSERT INTO PRODUTO VALUES (NULL,'LIVRO SQL SERVER',100.00);
+	
+	SELECT * FROM PRODUTO;
+	
+	CREATE DATABASE BACKUP;
+	USE BACKUP;
+	
+	== SELECT NOW() == /* MOSTRA A DATA E A HORA */
+	== SELECT CURRENT_USER  == /* MOSTRA O USUÁRIO E O SERVIDOR */
+	
+	
+	CREATE TABLE BKP_PRODUTO(
+		IDBACKUP INT PRIMARY KEY AUTO_INCREMENT,
+		IDPRODUTO INT,
+		NOME VARCHAR (30),
+		VALOR_ORIGINAL FLOAT (10,2),
+		VALOR_ALTERADO FLOAT (10,2),
+		DATA DATETIME,
+		USUARIO VARCHAR (30),
+		EVENTO CHAR(1)
+	);
+	
+	USE LOJA;
+	
+	DELIMITER $
+	
+	CREATE TRIGGER AUDIT_PROD
+	AFTER UPDATE ON PRODUTO
+	FOR EACH ROW
+	BEGIN
+	
+		INSERT INTO BACKUP.BKP_PRODUTO
+		VALUES(NULL,OLD.IDPRODUTO,OLD.NOME,OLD.VALOR,NEW.VALOR,NOW(),CURRENT_USER(),'U');
+	                                                        /*(QUANDO ,  QUEM )*/
+	END
+	$
+	
+	DELIMITER ;
+	
+	UPDATE PRODUTO SET VALOR = 110.00
+	WHERE IDPRODUTO = 4;
+	
+	SELECT * FROM PRODUTO;
+	SELECT * FROM BACKUP.BKP_PRODUTO;
+	
+	
+	==== /* AUTO RELACIONAMENTO */ ====
+	
+	CREATE DATABASE AULA44;
+	USE AULA44;
+	
+	CREATE TABLE CURSOS(
+		IDCURSO INT PRIMARY KEY AUTO_INCREMENT,
+		NOME VARCHAR(30),
+		HORAS INT,
+		VALOR FLOAT (10,2),
+		ID_PREREQ INT
+	);
+	
+	ALTER TABLE CURSOS ADD CONSTRAINT FK_PREREQ
+	FOREIGN KEY (ID_PREREQ) REFERENCES CURSOS (IDCURSO);
+	
+	
+	INSERT INTO CURSOS VALUES(NULL,'BD RELACIONAL',20,400.00,NULL);
+	INSERT INTO CURSOS VALUES(NULL,'BUSINES INTELIGENCE',40,800.00,1);
+	INSERT INTO CURSOS VALUES(NULL,'RELATORIOS AVANCADOS,'20,600.00,2);
+	INSERT INTO CURSOS VALUES(NULL,'LOGICA DE PROGRAMACAO',20,400.00,NULL);
+	INSERT INTO CURSOS VALUES(NULL,'RUBY',30,500.00,4);
+	
+	SELECT * FROM CURSOS;
+	
+	SELECT NOME, VALOR, HORAS, IFNULL(ID_PREREQ, "SEM REQUISITO") REQUISITO
+	FROM CURSOS;
+	
+	SELECT 
+	  C.NOME                AS CURSO
+	, C.VALOR               AS VALOR 
+	, C.HORAS               AS CARGA
+	, IFNULL(P.NOME, '---') AS PREREQ
+	FROM CURSOS C
+	LEFT JOIN CURSOS P
+	ON P.IDCURSO = C.ID_PREREQ; 
+	
+	
+	
+	===== /* INTRODUÇÃO AOS CURSORES (VETOR) */ =====
+	
+	
+	CREATE DATABASE CURSORES;
+	USE CURSORES;
+	
+	CREATE TABLE VENDEDORES(
+		IDVENDEDOR INT PRIMARY KEY AUTO_INCREMENT,
+		NOME VARCHAR (50),
+		JAN INT,
+		FEV INT,
+		MAR INT
+	);
+	
+	INSERT INTO VENDEDORES VALUES (NULL,'MAFRA',15246,25685,32165);
+	INSERT INTO VENDEDORES VALUES (NULL,'CLARA',58946,26385,15951);
+	INSERT INTO VENDEDORES VALUES (NULL,'JOAO',32165,65478,96325);
+	INSERT INTO VENDEDORES VALUES (NULL,'LILIAN',25896,85214,12389);
+	INSERT INTO VENDEDORES VALUES (NULL,'ANTONIO',56425,85642,21855);
+	INSERT INTO VENDEDORES VALUES (NULL,'GLORIA',23125,45652,85356);
+	
+	
+	SELECT * FROM VENDEDORES;
+	
+	SELECT NOME, (JAN+FEV+MAR) AS TOTAL 
+	FROM VENDEDORES; 
+	
+	SELECT NOME, (JAN+FEV+MAR)/3 AS MEDIA
+	FROM VENDEDORES;
+	
+	/* ESSES CALCULOS LEVAM MUITA DEMANDA NO TEMPO DE EXECUÇÃO E PROCESSAMENTO */
+	/* A SAÍDA PRA ISSO É CRIAR OUTRA TABELA DIRETAMENTE COM OS CÁLCULOS COM CURSORES */
+	
+	CREATE TABLE VEND_TOTAL(
+		NOME VARCHAR (50),
+		JAN INT,
+		FEV INT,
+		MAR INT,
+		TOTAL INT,
+		MEDIA INT
+	);
+	
+	DELIMITER $ 
+	
+	CREATE PROCEDURE INSEREDADOS()
+	BEGIN 
+	
+		DECLARE FIM INT DEFAULT 0;
+		DECLARE VAR1, VAR2, VAR3, VTOTAL, VMEDIA INT;
+		DECLARE VNOME VARCHAR (50);
+		
+		DECLARE REG CURSOR FOR (
+			SELECT NOME, JAN, FEV, MAR FROM VENDEDORES
+		);
+		
+		DECLARE CONTINUE HANDLER FOR NOT FOUND SET FIM = 1;
+		
+		OPEN REG; 
+		
+			REPEAT 
+			
+				FETCH REG INTO VNOME, VAR1, VAR2, VAR3;
+				IF NOT FIM THEN 
+				
+					SET VTOTAL = VAR1 + VAR2 + VAR3;
+					SET VMEDIA = VTOTAL/3;
+					
+					INSERT INTO VEND_TOTAL VALUES (VNOME,VAR1,VAR2,VAR3,VTOTAL,VMEDIA);
+				END IF;
+			UNTIL FIM END REPEAT;
+		CLOSE REG;
+	END
+	$
+	
+	DELIMITER ;
+	
+	SELECT * FROM VENDEDORES;
+	SELECT * FROM VEND_TOTAL;
+	
+	CALL INSEREDADOS();
+	
+	
+	
+	===== /* RELEMBRANDO AS FORMAS NORMAIS */ =====
+	
+	1º FORMA - ATOMICIDADE (UM CAMPO NÃO PODE SER DIVISÍVEL)
+	         - UM CAMPO NÃO PODE SER VETORIZADPO
+			 - DEVE CONTER UMA CHAVE PRIMARIA
+			
+	2º FORMA - CAMPO NÃO CHAVE DEPENDE DA TOTALIDADE DA CHAVE.
+	3º FORMA - CAMPOS NÃO CHAVE QUE DEPENDEM DE OUTROS CAMPOS NÃO CHAVE,
+	           SE TORNAM OUTRA TABELA.
+			   
+			   
+	CREATE DATABASE CONSULTORIO;
+	USE CONSULTORIO;
+	
+	CREATE TABLE PACIENTE(
+		IDPACIENTE INT PRIMARY KEY AUTO_INCREMENT,
+		NOME VARCHAR (30),
+		SEXO CHAR(1),
+		EMAIL VARCHAR (30),
+		NASCIMENTO DATE
+	);
+	
+	CREATE TABLE MEDICO (
+		IDMEDICO INT PRIMARY KEY AUTO_INCREMENT,
+		NOME VARCHAR (30),
+		SEXO CHAR (1),
+		ESPECIALIDADE VARCHAR (30),
+		FUNCIONARIO ENUM ('S','N')
+	);
+	
+	CREATE TABLE HOSPITAL(
+		IDHOSPITAL INT PRIMARY KEY AUTO_INCREMENT,
+		NOME VARCHAR (30),
+		BAIRRO VARCHAR (30),
+		CIDADE VARCHAR (30),
+		ESTADO VARCHAR (2)
+	);
+	
+	CREATE TABLE CONSULTA(
+		IDCONSULTA INT PRIMARY KEY AUTO_INCREMENT,
+		ID_PACIENTE INT,
+		ID_MEDICO INT,
+		ID_HOSPITAL INT,
+		DATA DATETIME,
+		DIAGNOSITCO VARCHAR (50)	
+	);
+	
+	CREATE TABLE INTERNACAO(
+		IDINTERNACAO INT PRIMARY KEY AUTO_INCREMENT,
+		ENTRADA DATETIME,
+		QUARTO INT,
+		SAIDA DATETIME,
+		OBSERVACOES VARCHAR (50),
+		ID_CONSULTA INT UNIQUE
+	);
+	
+	
+	/* PADRÃO - COD_PRAONDEVAI_DEONDEVEM */ 
+	
+	ALTER TABLE CONSULTA ADD CONSTRAINT FK_CONSULTA_PACIENTE
+	FOREIGN KEY (ID_PACIENTE) REFERENCES PACIENTE(IDPACIENTE);
+	
+	ALTER TABLE CONSULTA ADD CONSTRAINT FK_CONSULTA_MEDICO 
+	FOREIGN KEY (ID_MEDICO) REFERENCES MEDICO(IDMEDICO);
+	
+	ALTER TABLE CONSULTA ADD CONSTRAINT FK_CONSULTA_HOSPITAL
+	FOREIGN KEY (ID_HOSPITAL) REFERENCES HOSPITAL(IDHOSPITAL);
+	
+	ALTER TABLE INTERNACAO ADD CONSTRAINT FK_INTERNACAO_CONSULTA
+	FOREIGN KEY (ID_CONSULTA) REFERENCES CONSULTA(IDCONSULTA);
+	
+	USE INFORMATION_SCHEMA;
+	SHOW TABLES;
+	DESC TABLE_CONSTRAINTS;
+	SELECT * FROM TABLE_CONSTRAINTS;
